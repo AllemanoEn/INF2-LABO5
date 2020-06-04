@@ -27,5 +27,5 @@
 - saveIndex
 - deleteIndex
 
-## definitions.h
+## definitions.c
 - Définition de toutes les fonctions déclarées
