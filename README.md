@@ -3,7 +3,6 @@
 - Traitement des paramètres de ligne de commande.
 - Appel des différentes fonctions
 
-
 ## heading.h
 ###words
 - addWord
