@@ -15,6 +15,12 @@ void saveIndex(struct Heading* index, char const filename[], unsigned const fnSi
 
 void test();
 
-char** readFile(const char filename[]);
+/**
+ *
+ * @param filename
+ * @param dest
+ * @param lineNb
+ */
+void readFile(const char filename[], char** dest, size_t *lineNb);
 
 #endif //INF2_LABO5_BOOK_INDEX_H

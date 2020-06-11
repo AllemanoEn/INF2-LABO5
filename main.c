@@ -8,6 +8,9 @@ int main() {
               "Pack my box with five\n"
               "dozen liquor jugs.";
 
-    readFile("text.txt");
+    //test();
+    char** text = NULL;
+    size_t lines = 0;
+    readFile("text.txt", text, lines);
     return 0;
 }

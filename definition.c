@@ -23,7 +23,6 @@ void fillIndex(struct Heading* index, const char** text, unsigned const lineCoun
             printf("%s , l=%d\n", token, i);
             token = strtok(NULL, DELIM);
         }
-        printf("\n------------------------------\n");
 
     }
 }
@@ -33,39 +32,57 @@ void saveIndex(struct Heading* index, char const filename[], unsigned const fnSi
 
 
 
-char** readFile(const char filename[]){
-    FILE *file;
-    file = fopen(filename, "r");
+void readFile(const char filename[], char** dest, size_t *lineNb){
+    FILE * file;
+    char linestr [100];
+
+    file = fopen (filename , "r");
+
     if(file == NULL)
-    {
         exit(EXIT_FAILURE);
-    }
 
-    char line[60];
+    // comptage des lignes
     unsigned count = 0;
-
-    /*while(line != EOF)
+    char c = getc(file);
+    while(c != EOF)
     {
-        fgets(line, -1u, file);
-        ++count;
-    }*/
-    for (char c = getc(file); c != EOF; c = getc(file))
-        if (c == '\n') // Increment count if this character is newline
-            count = count + 1;
-
-    char** tab = malloc(count * sizeof(char*));
-
-    for(int i = 0; i < count; ++i){
-        tab[i] = fgets(line, -1u, file);
-        printf("%s\n", tab[i]);
+        if(c == '\n')
+            ++count;
+        c = getc(file);
     }
 
+    rewind(file);
+
+    char** t = malloc(sizeof(char*) * count);
+    for(int i = 0; i < count; ++i){
+        unsigned linelen = strlen(linestr);
+        fgets (linestr , 100 , file);
+        char* l = malloc(sizeof(char) * strlen(linestr));
+        strcpy(l, linestr);
+        t[i] = l;
+    }
+
+
+    dest = t;
+    lineNb = count;
+
+    test(t, lineNb);
 
 
 }
+void test(const char** text, unsigned const lineCount){
 
+    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
 
+    for(int i = 0; i < lineCount; ++i) {
+        char *token = strtok(text[i], DELIM);
 
+        while (token != NULL) {
+            printf("%s , l=%d\n", token, i);
+            token = strtok(NULL, DELIM);
+        }
+    }
+}
 
 
 
