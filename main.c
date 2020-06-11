@@ -8,6 +8,6 @@ int main() {
               "Pack my box with five\n"
               "dozen liquor jugs.";
 
-    test();
+    readFile("text.txt");
     return 0;
 }
