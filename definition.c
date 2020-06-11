@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "book_index.h"
 #include "heading.h"
 
@@ -11,58 +12,66 @@
 struct Heading* createIndex(const char filename[], unsigned const size){}
 struct Heading* findWord(struct Heading *index, char const word[], unsigned const wordSize){}
 
-void fillIndex(struct Heading* index, const char text[], unsigned const txtSize){
-    char str[] = "Test 123 Test\nBonjour";
-    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/*";// "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
-    char* token = strtok(str, DELIM);
-    unsigned count = 0;
-    while(token != NULL){
-        if(strlen(token) > 2);{
-            // find le mot
-            createWord(token, strlen(token),0);
-        }
+void fillIndex(struct Heading* index, const char** text, unsigned const lineCount){
 
-        token = strtok(NULL, DELIM);
+    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
+    for(int i = 0; i < lineCount; ++i)
+    {
+        char* token = strtok(text[i], DELIM);
+
+        while(token != NULL){
+            printf("%s , l=%d\n", token, i);
+            token = strtok(NULL, DELIM);
+        }
+        printf("\n------------------------------\n");
 
     }
-
 }
 
 void test(){
-    char str[] = "The five boxing\n"
-                 "wizards jump quickly.\n"
-                 "Pack my box with five\n"
-                 "dozen liquor jugs.";
+    const size_t lineCount = 2;
+    char l1[] = "The five boxing\n"
+                "wizards jump quickly.\n"
+                "Pack my box with five\n"
+                "dozen liquor jugs.";
+    char l2[] = "Test 123 456";
 
-    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";// "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
+    char* str[] = { l1, l2 } ;
+    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
+    for(int i = 0; i < lineCount; ++i)
+    {
+        char* token = strtok(str[i], DELIM);
+
+        while(token != NULL){
+            printf("%s , l=%d\n", token, i);
+            token = strtok(NULL, DELIM);
+        }
+        printf("\n------------------------------\n");
+
+    }
+
+
+
+    /*const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
     const char LINE[] = "\n";
-    char* line = strtok(str, LINE);
-
+    char* line = str;
+    char* linetok = strtok(line, LINE);
     unsigned lineCount = 0;
 
     while(line != NULL){
 
-        //char* token = strtok(line, DELIM);
-        printf("%s , l=%d\n", line, lineCount);
-        /*while(token != NULL){
+        char* token = malloc(sizeof(char*));
+        token = strtok(linetok, DELIM);
+
+        while(token != NULL){
             printf("%s , l=%d\n", token, lineCount);
             token = strtok(NULL, DELIM);
-        }/*/
-        line = strtok(NULL, LINE);
-        lineCount++;
-    }
+        }
 
-    while(line != NULL){
-
-        //char* token = strtok(line, DELIM);
-        printf("%s , l=%d\n", line, lineCount);
-        /*while(token != NULL){
-            printf("%s , l=%d\n", token, lineCount);
-            token = strtok(NULL, DELIM);
-        }/*/
-        line = strtok(NULL, LINE);
+        line = strchr(line, '\n');
+        linetok = strtok(line, LINE);
         lineCount++;
-    }
+    }*/
 
 
 }
