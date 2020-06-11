@@ -1,6 +1,11 @@
 #include <stdio.h>
 
 int main() {
-    printf("Hello, World!\n");
+    char s[] = "The five boxing\n"
+              "wizards jump quickly.\n"
+              "Pack my box with five\n"
+              "dozen liquor jugs.";
+
+
     return 0;
 }

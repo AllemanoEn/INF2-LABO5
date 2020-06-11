@@ -11,6 +11,7 @@
 - saveWord
 - destroyWord
 
+
 ###location
 - addLocation
 
@@ -18,6 +19,9 @@
 - heading
 - location
 
+###diverses
+- to_lower
+- displayLines
 ## book_index.h
 ###Index
 - createIndex
@@ -25,6 +29,9 @@
 - displayIndex
 - saveIndex
 - deleteIndex
+
+###diverses
+- Fonctions de lecture / écriture de fichiers
 
 ## definitions.c
 - Définition de toutes les fonctions déclarées
