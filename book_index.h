@@ -13,6 +13,6 @@ void fillIndex(struct Heading* index, const char text[], unsigned const txtSize)
 void displayIndex(struct Heading* index);
 void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize);
 
-
+void test();
 
 #endif //INF2_LABO5_BOOK_INDEX_H
