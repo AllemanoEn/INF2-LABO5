@@ -53,19 +53,23 @@ void readFile(const char filename[], char** dest, size_t *lineNb){
 
     rewind(file);
 
+    // stockage de chaque ligne dans le tableau de pointeurs t
     char** t = malloc(sizeof(char*) * count);
     for(int i = 0; i < count; ++i){
-        unsigned linelen = strlen(linestr);
-        fgets (linestr , 100 , file);
-        char* l = malloc(sizeof(char) * strlen(linestr));
-        strcpy(l, linestr);
+
+        fgets (linestr , 100 , file); // récupération de la ligne
+
+        char* l = malloc(sizeof(char) * strlen(linestr) + 1); // allocation de la mémoire
+        // remarque: le "+1" sert à éviter une erreur (https://zestedesavoir.com/forums/sujet/10773/erreur-dans-realloc-sysmalloc-assertion-failed/)
+
+        strcpy(l, linestr); // copie des données
         t[i] = l;
     }
-
 
     dest = t;
     lineNb = count;
 
+    // affiche toutes les lignes
     test(t, lineNb);
 
 
@@ -79,9 +83,11 @@ void test(const char** text, unsigned const lineCount){
 
         while (token != NULL) {
             printf("%s , l=%d\n", token, i);
+
             token = strtok(NULL, DELIM);
         }
     }
+
 }
 
 

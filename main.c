@@ -11,6 +11,6 @@ int main() {
     //test();
     char** text = NULL;
     size_t lines = 0;
-    readFile("text.txt", text, lines);
+    readFile("macbeth.txt", text, lines);
     return 0;
 }
