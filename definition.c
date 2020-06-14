@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "book_index.h"
 #include "heading.h"
 
@@ -104,5 +105,12 @@ void destroyWord(struct Heading *word, struct Heading *index){}
 
 void addLocation(struct Location *locations, unsigned const lineNb){} // ajoute au début de la liste
 
-char* to_lower(char word[], unsigned const size){} // transforme tous les caractères en minuscule
+char* to_lower(char word[], unsigned const size){
+    char* temp = malloc(sizeof(char)*size);//Attention, il faudra free après
+    for (unsigned i = 0; i < size; ++i) {
+        *(temp+i) = (char) tolower(word[i]);
+    }
+    return temp;
+} // transforme tous les caractères en minuscule
+
 void displayLines(struct Location *firstLocation){} // récursive pour afficher la liste de la fin au début
