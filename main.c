@@ -6,7 +6,7 @@ int main() {
 
     char** text = NULL;
     size_t lines = 0;
-    struct Heading index = { };
+    struct Heading index = { NULL };
     readFile("text.txt", &text, &lines);
     fillIndex(text, lines);
 

@@ -24,6 +24,7 @@ void fillIndex(const char** text, unsigned const lineCount){
             //printf("%s , l=%d\n", token, i);
             struct Header *word = createWord(token, strlen(token), i);
             saveWord(word);
+
             token = strtok(NULL, DELIM);
         }
 
@@ -35,7 +36,7 @@ void saveIndex(struct Heading* index, char const filename[], unsigned const fnSi
 
 
 
-void readFile(const char filename[], char*** dest, size_t *lineNb){
+void readFile(const char filename[], char*** dest, size_t* lineNb){
     FILE * file;
     char linestr [100];
 
@@ -45,7 +46,7 @@ void readFile(const char filename[], char*** dest, size_t *lineNb){
         exit(EXIT_FAILURE);
 
     // comptage des lignes
-    unsigned count = 0;
+    unsigned count = 1;
     char c = getc(file);
     while(c != EOF)
     {
@@ -69,25 +70,22 @@ void readFile(const char filename[], char*** dest, size_t *lineNb){
         t[i] = l;
     }
 
-    *dest = &t;
+    *dest = t;
     *lineNb = count;
-
 }
 
 /* heading.h */
 struct Heading* createWord(char const word[], unsigned const wordSize, unsigned const lineNb){
 
-    size_t locSize = sizeof(unsigned) + sizeof(struct Location*);
+    size_t locSize = sizeof(struct Location);
     struct Location* loc = malloc(locSize);
     struct Location locStack = {NULL, lineNb};
     memcpy(loc, &locStack, locSize);
 
-    size_t headingSize = sizeof(struct Header*) +
-                         sizeof(char) * wordSize +
-                         sizeof(unsigned)  +
-                         sizeof(struct Location*);
+    size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
-    struct Heading WordStack = { NULL, word, wordSize, &loc};
+    int s = sizeof(struct Heading);
+    struct Heading WordStack = { NULL, word, wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
     return wordHeading;
@@ -95,7 +93,25 @@ struct Heading* createWord(char const word[], unsigned const wordSize, unsigned 
 
 void displayWord(struct Heading *word){}
 void saveWord(struct Heading *word){
-    printf("Mot: %s\n", word->word);
+    // Rechercher si le mot est déjà dans l'index
+    // si oui -> addLocation
+
+    // si non -> accrocher le heading à la chaîne
+    if(Heading_index.firstHeading == NULL)
+    {
+
+    }
+
+    struct Heading* ptr = Heading_index.firstHeading;
+
+
+    while(ptr != NULL && ptr->next != NULL )
+    {
+        ptr = ptr->next;
+    }
+
+    ptr->next = word;
+
 }
 void destroyWord(struct Heading *word, struct Heading *index){}
 
