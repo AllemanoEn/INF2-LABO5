@@ -153,7 +153,15 @@ void saveWord(struct Heading *word){
 
 void destroyWord(struct Heading *word, struct Heading *index){}
 
-void addLocation(struct Location *locations, unsigned const lineNb){} // ajoute au début de la liste
+void addLocation(struct Location *locations, unsigned const lineNb){
+    size_t locSize = sizeof(struct Location);
+    struct Location* loc = malloc(locSize);
+
+    loc->lineNumber = lineNb;
+    loc->next = locations->next;
+
+    locations->next = loc;
+} // ajoute au début de la liste
 
 char* to_lower(char word[], unsigned const size){
     char* temp = malloc(sizeof(char)*size); //Attention, il faudra free après

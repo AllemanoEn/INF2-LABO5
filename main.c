@@ -4,12 +4,7 @@
 
 int main() {
 
-    char** text = NULL;
-    size_t lines = 0;
-    struct Heading index = { NULL };
-    readFile("text.txt", &text, &lines);
-    fillIndex(text, lines);
-    struct Heading* p = findWord("The", 3);
+    createIndex("text.txt");
 
     return 0;
 
