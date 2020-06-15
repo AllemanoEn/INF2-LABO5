@@ -11,17 +11,26 @@
 
 /* book_index.h */
 struct Heading* createIndex(const char filename[], unsigned const size){}
-struct Heading* findWord(struct Heading *index, char const word[], unsigned const wordSize){}
+struct Heading* findWord(char const word[], unsigned const wordSize){
+    if(Heading_index.firstHeading == NULL)
+        return NULL;
+    struct Heading* ptr = Heading_index.firstHeading;
+
+    while(ptr != NULL && strcmp(word, ptr->word)){
+        ptr = ptr->next;
+    }
+
+    return ptr;
+}
 
 void fillIndex(const char** text, unsigned const lineCount){
 
-    const char DELIM[] = "0123456789.`~$^+=<>“!@#&()–[{}]:;',?/* \n";
+    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/*. \n";
     for(int i = 0; i < lineCount; ++i)
     {
         char* token = strtok(text[i], DELIM);
 
         while(token != NULL){
-            //printf("%s , l=%d\n", token, i);
             struct Header *word = createWord(token, strlen(token), i);
             saveWord(word);
 
@@ -109,26 +118,31 @@ void displayWord(struct Heading *word){
 }
 
 void saveWord(struct Heading *word){
-    // Rechercher si le mot est déjà dans l'index
-    // si oui -> addLocation
 
-    // si non -> accrocher le heading à la chaîne
     if(Heading_index.firstHeading == NULL)
     {
         Heading_index.firstHeading = word;
         return;
     }
 
+    struct Heading* wordPos = findWord(word->word, word->wordSize);
+    if(wordPos != NULL)
+    {
+//       printf("doublon: %s ", word->word);
+       addLocation(wordPos->lines, word->lines->lineNumber);
+       return;
+    }
+
     struct Heading* ptr = Heading_index.firstHeading;
 
-    while(ptr->next != NULL )
-    {
+    while(ptr->next != NULL ) { // positionne le pointeur sur le dernier Heading
         ptr = ptr->next;
     }
 
     ptr->next = word;
-
 }
+
+
 void destroyWord(struct Heading *word, struct Heading *index){}
 
 void addLocation(struct Location *locations, unsigned const lineNb){} // ajoute au début de la liste

@@ -9,7 +9,7 @@ int main() {
     struct Heading index = { NULL };
     readFile("text.txt", &text, &lines);
     fillIndex(text, lines);
-
+    struct Heading* p = findWord("The", 3);
 
     return 0;
 
