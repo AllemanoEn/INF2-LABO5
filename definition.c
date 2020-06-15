@@ -15,7 +15,7 @@ struct Heading* findWord(struct Heading *index, char const word[], unsigned cons
 
 void fillIndex(const char** text, unsigned const lineCount){
 
-    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
+    const char DELIM[] = "0123456789.`~$^+=<>“!@#&()–[{}]:;',?/* \n";
     for(int i = 0; i < lineCount; ++i)
     {
         char* token = strtok(text[i], DELIM);
