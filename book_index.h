@@ -7,9 +7,9 @@ struct {
     struct Heading* firstHeading;
 } Heading_index;
 
-struct Heading* createIndex(const char filename[], unsigned const size);
+void createIndex(const char filename[]);
 struct Heading* findWord(char const word[], unsigned const wordSize);
-void fillIndex(const char** text, unsigned const lineCount);
+void fillIndex(char** text, unsigned const lineCount);
 void displayIndex();
 void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize);
 

@@ -10,7 +10,16 @@
 
 
 /* book_index.h */
-struct Heading* createIndex(const char filename[], unsigned const size){}
+void createIndex(const char filename[]){
+    char** text = NULL;
+    size_t lines = 0;
+
+    readFile(filename, &text, &lines);
+    fillIndex(text, lines);
+
+    displayIndex();
+}
+
 struct Heading* findWord(char const word[], unsigned const wordSize){
     if(Heading_index.firstHeading == NULL)
         return NULL;
@@ -23,7 +32,7 @@ struct Heading* findWord(char const word[], unsigned const wordSize){
     return ptr;
 }
 
-void fillIndex(const char** text, unsigned const lineCount){
+void fillIndex(char** text, unsigned const lineCount){
 
     const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/*. \n";
     for(int i = 0; i < lineCount; ++i)
@@ -106,7 +115,6 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
-    int s = sizeof(struct Heading);
     struct Heading WordStack = {NULL, to_lower(word, wordSize), wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
