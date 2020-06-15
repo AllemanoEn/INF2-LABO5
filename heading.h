@@ -16,7 +16,7 @@ struct Heading {
 struct Heading* createWord(char const word[], unsigned const wordSize, unsigned const lineNb);
 
 void displayWord(struct Heading *word);
-void saveWord(struct Heading *index, struct Heading *word);
+void saveWord(struct Heading *word);
 void destroyWord(struct Heading *word, struct Heading *index);
 
 void addLocation(struct Location *locations, unsigned const lineNb); // ajoute au début de la liste

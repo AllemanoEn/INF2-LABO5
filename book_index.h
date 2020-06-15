@@ -5,22 +5,17 @@
 
 struct {
     struct Heading* firstHeading;
-} Index;
+} Heading_index;
 
 struct Heading* createIndex(const char filename[], unsigned const size);
 struct Heading* findWord(struct Heading *index, char const word[], unsigned const wordSize);
-void fillIndex(struct Heading* index, const char** text, unsigned const lineCount);
+void fillIndex(const char** text, unsigned const lineCount);
 void displayIndex(struct Heading* index);
 void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize);
 
 void test();
 
-/**
- *
- * @param filename
- * @param dest
- * @param lineNb
- */
-void readFile(const char filename[], char** dest, size_t *lineNb);
+
+void readFile(const char filename[], char*** dest, size_t *lineNb);
 
 #endif //INF2_LABO5_BOOK_INDEX_H

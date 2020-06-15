@@ -13,7 +13,7 @@
 struct Heading* createIndex(const char filename[], unsigned const size){}
 struct Heading* findWord(struct Heading *index, char const word[], unsigned const wordSize){}
 
-void fillIndex(struct Heading* index, const char** text, unsigned const lineCount){
+void fillIndex(const char** text, unsigned const lineCount){
 
     const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
     for(int i = 0; i < lineCount; ++i)
@@ -21,7 +21,9 @@ void fillIndex(struct Heading* index, const char** text, unsigned const lineCoun
         char* token = strtok(text[i], DELIM);
 
         while(token != NULL){
-            printf("%s , l=%d\n", token, i);
+            //printf("%s , l=%d\n", token, i);
+            struct Header *word = createWord(token, strlen(token), i);
+            saveWord(word);
             token = strtok(NULL, DELIM);
         }
 
@@ -33,7 +35,7 @@ void saveIndex(struct Heading* index, char const filename[], unsigned const fnSi
 
 
 
-void readFile(const char filename[], char** dest, size_t *lineNb){
+void readFile(const char filename[], char*** dest, size_t *lineNb){
     FILE * file;
     char linestr [100];
 
@@ -67,40 +69,34 @@ void readFile(const char filename[], char** dest, size_t *lineNb){
         t[i] = l;
     }
 
-    dest = t;
-    lineNb = count;
-
-    // affiche toutes les lignes
-    test(t, lineNb);
-
+    *dest = &t;
+    *lineNb = count;
 
 }
-void test(const char** text, unsigned const lineCount){
-
-    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/* \n";
-
-    for(int i = 0; i < lineCount; ++i) {
-        char *token = strtok(text[i], DELIM);
-
-        while (token != NULL) {
-            printf("%s , l=%d\n", token, i);
-
-            token = strtok(NULL, DELIM);
-        }
-    }
-
-}
-
-
-
 
 /* heading.h */
 struct Heading* createWord(char const word[], unsigned const wordSize, unsigned const lineNb){
 
+    size_t locSize = sizeof(unsigned) + sizeof(struct Location*);
+    struct Location* loc = malloc(locSize);
+    struct Location locStack = {NULL, lineNb};
+    memcpy(loc, &locStack, locSize);
+
+    size_t headingSize = sizeof(struct Header*) +
+                         sizeof(char) * wordSize +
+                         sizeof(unsigned)  +
+                         sizeof(struct Location*);
+    struct Heading* wordHeading = malloc(headingSize);
+    struct Heading WordStack = { NULL, word, wordSize, &loc};
+    memcpy(wordHeading, &WordStack, headingSize);
+
+    return wordHeading;
 }
 
 void displayWord(struct Heading *word){}
-void saveWord(struct Heading *index, struct Heading *word){}
+void saveWord(struct Heading *word){
+    printf("Mot: %s\n", word->word);
+}
 void destroyWord(struct Heading *word, struct Heading *index){}
 
 void addLocation(struct Location *locations, unsigned const lineNb){} // ajoute au début de la liste
