@@ -13,7 +13,7 @@ struct Heading {
     struct Location* lines;
 };
 
-struct Heading* createWord(char const word[], unsigned const wordSize, unsigned const lineNb);
+struct Heading* createWord(char word[], unsigned const wordSize, unsigned const lineNb);
 
 void displayWord(struct Heading *word);
 void saveWord(struct Heading *word);

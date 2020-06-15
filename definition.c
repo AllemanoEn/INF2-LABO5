@@ -34,11 +34,13 @@ void fillIndex(const char** text, unsigned const lineCount){
 void displayIndex(){
     struct Heading* ptr = Heading_index.firstHeading;
 
-
     while(ptr->next != NULL )
     {
         displayWord(ptr);
+        printf(", ");
+        displayLines(ptr->lines);
         ptr = ptr->next;
+        printf("\n");
     }
 
 }
@@ -86,7 +88,7 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
 }
 
 /* heading.h */
-struct Heading* createWord(char const word[], unsigned const wordSize, unsigned const lineNb){
+struct Heading* createWord(char word[], unsigned const wordSize, unsigned const lineNb){
 
     size_t locSize = sizeof(struct Location);
     struct Location* loc = malloc(locSize);
@@ -96,7 +98,7 @@ struct Heading* createWord(char const word[], unsigned const wordSize, unsigned 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
     int s = sizeof(struct Heading);
-    struct Heading WordStack = { NULL, word, wordSize, loc};
+    struct Heading WordStack = {NULL, to_lower(word, wordSize), wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
     return wordHeading;
@@ -104,7 +106,6 @@ struct Heading* createWord(char const word[], unsigned const wordSize, unsigned 
 
 void displayWord(struct Heading *word){
     printf("%s",word->word);
-    displayLines(word->lines);
 }
 
 void saveWord(struct Heading *word){
@@ -120,7 +121,6 @@ void saveWord(struct Heading *word){
 
     struct Heading* ptr = Heading_index.firstHeading;
 
-
     while(ptr->next != NULL )
     {
         ptr = ptr->next;
@@ -135,10 +135,17 @@ void addLocation(struct Location *locations, unsigned const lineNb){} // ajoute 
 
 char* to_lower(char word[], unsigned const size){
     char* temp = malloc(sizeof(char)*size); //Attention, il faudra free après
-    for (unsigned i = 0; i < size; ++i) {
+    for (unsigned i = 0; i < size + 1; ++i) {
         *(temp+i) = (char) tolower(word[i]);
     }
     return temp;
 } // transforme tous les caractères en minuscule
 
-void displayLines(struct Location *firstLocation){} // récursive pour afficher la liste de la fin au début
+void displayLines(struct Location *firstLocation){
+    if (firstLocation->next != NULL){
+        printf("%d, ", firstLocation->lineNumber + 1);
+        displayLines(firstLocation->next);
+    }else{
+        printf("%d", firstLocation->lineNumber + 1);
+    }
+} // récursive pour afficher la liste de la fin au début
