@@ -106,13 +106,14 @@ void saveWord(struct Heading *word){
     // si non -> accrocher le heading à la chaîne
     if(Heading_index.firstHeading == NULL)
     {
-
+        Heading_index.firstHeading = word;
+        return;
     }
 
     struct Heading* ptr = Heading_index.firstHeading;
 
 
-    while(ptr != NULL && ptr->next != NULL )
+    while(ptr->next != NULL )
     {
         ptr = ptr->next;
     }
@@ -125,7 +126,7 @@ void destroyWord(struct Heading *word, struct Heading *index){}
 void addLocation(struct Location *locations, unsigned const lineNb){} // ajoute au début de la liste
 
 char* to_lower(char word[], unsigned const size){
-    char* temp = malloc(sizeof(char)*size);//Attention, il faudra free après
+    char* temp = malloc(sizeof(char)*size); //Attention, il faudra free après
     for (unsigned i = 0; i < size; ++i) {
         *(temp+i) = (char) tolower(word[i]);
     }
