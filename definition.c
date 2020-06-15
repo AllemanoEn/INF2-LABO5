@@ -31,7 +31,10 @@ void fillIndex(const char** text, unsigned const lineCount){
     }
 }
 
-void displayIndex(struct Heading* index){}
+void displayIndex(){
+    displayWord(Heading_index.firstHeading);
+}
+
 void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize){}
 
 
