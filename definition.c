@@ -91,7 +91,11 @@ struct Heading* createWord(char const word[], unsigned const wordSize, unsigned 
     return wordHeading;
 }
 
-void displayWord(struct Heading *word){}
+void displayWord(struct Heading *word){
+    printf("%s",word->word);
+    displayLines(word->lines);
+}
+
 void saveWord(struct Heading *word){
     // Rechercher si le mot est déjà dans l'index
     // si oui -> addLocation
