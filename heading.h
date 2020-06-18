@@ -10,7 +10,7 @@ struct Location {
 struct Heading {
     struct Heading* next;
     char* word;
-    unsigned const wordSize;
+    unsigned wordSize;
     struct Location* lines;
 };
 

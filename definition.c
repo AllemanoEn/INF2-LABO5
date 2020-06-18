@@ -7,7 +7,6 @@
 #include "heading.h"
 
 
-
 /* book_index.h */
 void createIndex(const char filename_text[],const char filename_stopword[]){
     char** text = NULL;
@@ -30,7 +29,7 @@ void createIndex(const char filename_text[],const char filename_stopword[]){
     free(stopwords);
 }
 
-struct Heading* findWord(char const word[], unsigned const wordSize){
+struct Heading* findWord(char const word[]){
     if(Heading_index.firstHeading == NULL)
         return NULL;
     struct Heading* ptr = Heading_index.firstHeading;
@@ -42,15 +41,8 @@ struct Heading* findWord(char const word[], unsigned const wordSize){
     return ptr;
 }
 
-/**
- * Dans Heading_index, on chercher le mot le plus grand mais plus petit que le mot passé en paramétre
- * @param word Le mot à comparer
- * @param wordSize taille du mot
- * @return  NULL, s'il n'y a pas de mot.
- *          Sinon le mot avant celui qui est plus grand que le mot passé en paramettre
- *          Si tout les mots sont plus petit, on retournee le dernier mot de Heading_index
- */
-struct Heading *beforeBiggerWord(const char *word, unsigned const wordSize) {
+
+struct Heading *beforeBiggerWord(const char *word) {
     if (Heading_index.firstHeading == NULL)
         return NULL;
 
@@ -64,7 +56,7 @@ struct Heading *beforeBiggerWord(const char *word, unsigned const wordSize) {
     return ptr;
 }
 
-bool binarySearch(const char word_to_find[],char** stopwords, int lineCount_stopwords){
+bool binarySearchStopWord(const char *word_to_find, char** stopwords, int lineCount_stopwords){
 
     int iLePlusPetit = 0;
     int iLePlusGrand = lineCount_stopwords - 1;
@@ -87,15 +79,16 @@ bool binarySearch(const char word_to_find[],char** stopwords, int lineCount_stop
 
 void fillIndex(char** text, unsigned const lineCount, char** stopwords, unsigned const swCount){
 
-    const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/*. \n";
-    for(int i = 0; i < lineCount; ++i)
+    const char DELIM[] = "0123456789`~$^+=<>\"!@#&()-[{}]:;',?/*. \n";
+    for(size_t i = 0; i < lineCount; ++i)
     {
         char* token = strtok(text[i], DELIM);
-        //printf("%d/%d\n", i, lineCount); // test
+        printf("%d/%d\n", i, lineCount); // test
         while(token != NULL){
-            token = to_lower(token, strlen(token));
-            if(!binarySearch(token, stopwords, swCount)){
-                struct Heading *word = createWord(token, strlen(token), i);
+            unsigned tokenLength = strlen(token);
+            token = to_lower(token, tokenLength);
+            if(!binarySearchStopWord(token, stopwords, swCount)){
+                struct Heading *word = createWord(token, tokenLength, i);
                 saveWord(word);
             }
 
@@ -208,14 +201,13 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 
     size_t locSize = sizeof(struct Location);
     struct Location* loc = malloc(locSize);
-    struct Location locStack = {NULL, lineNb};
-    memcpy(loc, &locStack, locSize);
+    loc->lineNumber = lineNb;
 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
-
-    struct Heading WordStack = {NULL, word, wordSize, loc};
-    memcpy(wordHeading, &WordStack, headingSize);
+    wordHeading->word = word;
+    wordHeading->wordSize = wordSize;
+    wordHeading->lines = loc;
 
     return wordHeading;
 }
@@ -225,14 +217,17 @@ void displayWord(struct Heading *word, FILE* stream){
 }
 
 void saveWord(struct Heading *word) {
-    //Moin de trois lettre, bye
+
+    //Moins de trois lettre, bye
     if (strlen(word->word) < 3)
         return;
-    //Si premier mot, on l'ajoute
+
+    //Si premier mot de la liste, on l'ajoute
     if (Heading_index.firstHeading == NULL) {
         Heading_index.firstHeading = word;
         return;
     }
+
     //On pourrait se passer des deux fonctions suivantes avec un avant_premier
     //On test le premier mot
     //si c'est le mot, on lui ajoute la ligne
@@ -247,7 +242,7 @@ void saveWord(struct Heading *word) {
         return;
     }
     //Si le mot est déjà dedans, on ajoute simplement la ligne
-    struct Heading *wordPos = beforeBiggerWord(word->word, word->wordSize);
+    struct Heading *wordPos = beforeBiggerWord(word->word);
     if (strcmp(word->word, wordPos->word) == 0) {
         addLocation(&(wordPos->lines), word->lines->lineNumber);
         return;
@@ -263,7 +258,7 @@ void addLocation(struct Location** locations, unsigned const lineNb){
         return;
 
     size_t locSize = sizeof(struct Location);
-    struct Location* loc = (struct Location*) malloc(locSize + 2);
+    struct Location* loc = malloc(locSize * 2);
     loc->lineNumber = lineNb;
     loc->next = *locations;
 

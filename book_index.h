@@ -7,8 +7,6 @@ struct {
     struct Heading* firstHeading;
 } Heading_index;
 
-void createIndex(const char filename_text[],const char filename_stopword[]);
-struct Heading* findWord(char const word[], unsigned const wordSize);
 
 /**
  * Crée l'index à partir du fichier donné
@@ -20,10 +18,9 @@ void createIndex(const char filename_text[],const char filename_stopword[]);
 /**
  * Cherche un mot dans l'index
  * @param word : mot à rechercher
- * @param wordSize : taille du mot recherché
  * @return pointeur vers le mot trouvé ou NULL si le mot n'existe pas
  */
-struct Heading* findWord(char const word[], unsigned const wordSize); // todo: wordSize pas nécessaire
+struct Heading* findWord(char const word[]);
 
 /**
  * Remplit un index vide avec les mots du texte passé en paramètre
@@ -54,11 +51,35 @@ void destroyList(struct Heading* word);
 void printIndex(FILE* stream); // Affiche ou écrit l'index en fonction du stream passé en paramètre
 
 /**
- *
+ * Affiche l'index
  */
 void displayIndex();
+
+/**
+ * Ecrit l'index dans le fichier donné
+ * @param filename : fichier où enregistrer l'index
+ * @details Si le fichier existe déjà, son contenu sera écrasé. Sinon un nouveau fichier est créé
+ */
 void saveIndex(char const filename[]);
 
+/**
+ * Lit le fichier donné et stocke chaque ligne dans une ligne du tableau de destination.
+ * Compte également le nombre de lignes.
+ * @param filename : nom du fichier à lire
+ * @param dest : tableau de chaînes de caractères, rempli par cette fonction
+ * @param lineNb : comptage du nombre de lignes, rempli par cette fonction
+ */
 void readFile(const char filename[], char*** dest, size_t *lineNb);
+
+
+/**
+ * Dans Heading_index, on cherche le mot le plus grand, mais plus petit que le mot passé en paramétre
+ * @param word Le mot à comparer
+ * @param wordSize taille du mot
+ * @return  NULL, s'il n'y a pas de mot.
+ *          Sinon le mot avant celui qui est plus grand que le mot passé en paramettre
+ *          Si tout les mots sont plus petit, on retournee le dernier mot de Heading_index
+ */
+struct Heading *beforeBiggerWord(const char *word);
 
 #endif //INF2_LABO5_BOOK_INDEX_H
