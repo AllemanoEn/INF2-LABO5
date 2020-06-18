@@ -8,19 +8,18 @@
 
 
 
-
-
 /* book_index.h */
 void createIndex(const char filename_text[],const char filename_stopword[]){
     char** text = NULL;
     size_t lines_text = 0;
 
-    char** stopword = NULL;
-    size_t lines_stopword = 0;
+    readFile(filename_text, &text, &lines);
+    fillIndex(text, lines);
 
-    readFile(filename_text, &text, &lines_text);
-    readFile(filename_stopword, &stopword, &lines_stopword);
-    fillIndex(text, lines_text);
+    // Libère la mémoire utilisée par le stockage du texte
+    for(size_t i = 0; i < lines; ++i)
+        free(text[i]);
+    free(text);
 }
 
 struct Heading* findWord(char const word[], unsigned const wordSize){
@@ -34,6 +33,29 @@ struct Heading* findWord(char const word[], unsigned const wordSize){
 
     return ptr;
 }
+
+/**
+ * Dans Heading_index, on chercher le mot le plus grand mais plus petit que le mot passé en paramétre
+ * @param word Le mot à comparer
+ * @param wordSize taille du mot
+ * @return  NULL, s'il n'y a pas de mot.
+ *          Sinon le mot avant celui qui est plus grand que le mot passé en paramettre
+ *          Si tout les mots sont plus petit, on retournee le dernier mot de Heading_index
+ */
+struct Heading *beforeBiggerWord(const char *word, unsigned const wordSize) {
+    if (Heading_index.firstHeading == NULL)
+        return NULL;
+
+    struct Heading *ptr = Heading_index.firstHeading;
+    while (ptr->next != NULL) {
+        if (strcmp(ptr->next->word, word) > 0) {
+            return ptr;
+        }
+        ptr = ptr->next;
+    }
+    return ptr;
+}
+
 
 void fillIndex(char** text, unsigned const lineCount){
 
@@ -52,20 +74,24 @@ void fillIndex(char** text, unsigned const lineCount){
     }
 }
 
-
 void printIndex(FILE* stream){
     struct Heading* ptr = Heading_index.firstHeading;
 
-    while(ptr->next != NULL )
+    if(ptr == NULL){
+        return;
+    }
+
+    do
     {
         displayWord(ptr, stream);
         fprintf(stream, ", ");
         displayLines(ptr->lines, stream, true);
         ptr = ptr->next;
         fprintf(stream,"\n");
-    }
+    } while(ptr != NULL );
 
 }
+
 void displayIndex(){
     printIndex(stdout);
 }
@@ -83,8 +109,6 @@ void saveIndex(char const filename[]){
 
 }
 
-
-
 void readFile(const char filename[], char*** dest, size_t* lineNb){
     FILE * file;
     char linestr [100];
@@ -92,7 +116,11 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
     file = fopen (filename , "r");
 
     if(file == NULL)
+    {
+        perror("Error ");
         exit(EXIT_FAILURE);
+    }
+
 
     // comptage des lignes
     unsigned count = 1;
@@ -123,6 +151,21 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
     *lineNb = count;
 }
 
+
+void destroyIndex(){
+    destroyList(Heading_index.firstHeading);
+}
+
+void destroyList(struct Heading* word) {
+
+    if(word->next != NULL){
+        destroyList(word->next);
+        destroyWord(word);
+    }
+}
+
+
+
 /* heading.h */
 struct Heading* createWord(char word[], unsigned const wordSize, unsigned const lineNb){
 
@@ -133,7 +176,7 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
-    int s = sizeof(struct Heading);
+
     struct Heading WordStack = {NULL, to_lower(word, wordSize), wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
@@ -144,36 +187,44 @@ void displayWord(struct Heading *word, FILE* stream){
     fprintf(stream,"%s",word->word);
 }
 
-void saveWord(struct Heading *word){
-    if(strlen(word->word) < 3)
+void saveWord(struct Heading *word) {
+    //Moin de trois lettre, bye
+    if (strlen(word->word) < 3)
         return;
-
-    if(Heading_index.firstHeading == NULL)
-    {
+    //Si premier mot, on l'ajoute
+    if (Heading_index.firstHeading == NULL) {
         Heading_index.firstHeading = word;
         return;
     }
-
-    struct Heading* wordPos = findWord(word->word, word->wordSize);
-    if(wordPos != NULL)
-    {
-       addLocation(&(wordPos->lines), word->lines->lineNumber);
-       return;
+    //On pourrait se passer des deux fonctions suivantes avec un avant_premier
+    //On test le premier mot
+    //si c'est le mot, on lui ajoute la ligne
+    if (strcmp(Heading_index.firstHeading->word, word->word) == 0) {
+        addLocation(&(Heading_index.firstHeading->lines), word->lines->lineNumber);
+        return;
     }
-
-    struct Heading* ptr = Heading_index.firstHeading;
-
-    while(ptr->next != NULL ) { // positionne le pointeur sur le dernier Heading
-        ptr = ptr->next;
+    //s'il est plus grand, on doit mettre le nouveau mot au début
+    if (strcmp(Heading_index.firstHeading->word, word->word) > 0) {
+        word->next = Heading_index.firstHeading;
+        Heading_index.firstHeading = word;
+        return;
     }
-
-    ptr->next = word;
+    //Si le mot est déjà dedans, on ajoute simplement la ligne
+    struct Heading *wordPos = beforeBiggerWord(word->word, word->wordSize);
+    if (strcmp(word->word, wordPos->word) == 0) {
+        addLocation(&(wordPos->lines), word->lines->lineNumber);
+        return;
+    }
+    word->next = wordPos->next;
+    wordPos->next = word;
 }
 
 
-
-
 void addLocation(struct Location** locations, unsigned const lineNb){
+
+    if ((*locations)->lineNumber == lineNb)
+        return;
+
     size_t locSize = sizeof(struct Location);
     struct Location* loc = (struct Location*) malloc(locSize);
     loc->lineNumber = lineNb;
@@ -200,7 +251,22 @@ void displayLines(struct Location *firstLocation, FILE* stream, bool isFirstDisp
     if(!isFirstDisplayedLine)
         fprintf(stream,", ");
 
+}
+
+
+void destroyWord(struct Heading *word){
+    free(word->word);
+    destroyLocations(word->lines);
+    free(word->lines);
+    free(word);
+}
+
+void destroyLocations(struct Location *loc) {
+
+    if (loc->next != NULL) {
+        destroyLocations(loc->next);
+        free(loc->next);
+    }
 
 }
 
-void destroyWord(struct Heading *word, struct Heading *index){}

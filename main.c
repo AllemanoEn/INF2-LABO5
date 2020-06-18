@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "book_index.h"
-#include "heading.h"
 
 int main(int argc, char *argv[]) {
 
@@ -14,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     createIndex("text.txt","stopword.txt");
     displayIndex();
-
+    destroyIndex();
 
 
     return 0;

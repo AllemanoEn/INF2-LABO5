@@ -18,7 +18,8 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 
 void displayWord(struct Heading *word, FILE* stream);
 void saveWord(struct Heading *word);
-void destroyWord(struct Heading *word, struct Heading *index);
+void destroyWord(struct Heading *word);
+void destroyLocations(struct Location *loc);
 
 void addLocation(struct Location* *locations, unsigned const lineNb); // ajoute au début de la liste
 
