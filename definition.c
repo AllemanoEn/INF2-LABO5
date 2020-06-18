@@ -6,6 +6,7 @@
 #include "book_index.h"
 #include "heading.h"
 
+const int MAX_SIZE_WORD = 3;
 
 /* book_index.h */
 void createIndex(const char filename_text[],const char filename_stopword[]){
@@ -160,7 +161,7 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
 
     // stockage de chaque ligne dans le tableau de pointeurs t
     char** t = malloc(sizeof(char*) * count);
-    for(int i = 0; i < count; ++i){
+    for(unsigned i = 0; i < count; ++i){
 
         fgets (linestr , 100 , file); // récupération de la ligne
 
@@ -218,8 +219,8 @@ void displayWord(struct Heading *word, FILE* stream){
 
 void saveWord(struct Heading *word) {
 
-    //Moins de trois lettre, bye
-    if (strlen(word->word) < 3)
+    //Ne prend pas en compte les mots de moins de  MAX_SIZE_WORD lettress
+    if (strlen(word->word) < MAX_SIZE_WORD)
         return;
 
     //Si premier mot de la liste, on l'ajoute
@@ -228,11 +229,12 @@ void saveWord(struct Heading *word) {
         return;
     }
 
-    //On pourrait se passer des deux fonctions suivantes avec un avant_premier
+    //On pourrait se passer des deux conditions suivantes avec un avant_premier
     //On test le premier mot
     //si c'est le mot, on lui ajoute la ligne
     if (strcmp(Heading_index.firstHeading->word, word->word) == 0) {
         addLocation(&(Heading_index.firstHeading->lines), word->lines->lineNumber);
+        destroyWord(word);
         return;
     }
     //s'il est plus grand, on doit mettre le nouveau mot au début
@@ -245,6 +247,7 @@ void saveWord(struct Heading *word) {
     struct Heading *wordPos = beforeBiggerWord(word->word);
     if (strcmp(word->word, wordPos->word) == 0) {
         addLocation(&(wordPos->lines), word->lines->lineNumber);
+        destroyWord(word);
         return;
     }
     word->next = wordPos->next;
@@ -266,12 +269,12 @@ void addLocation(struct Location** locations, unsigned const lineNb){
 }
 
 char* to_lower(char word[], unsigned const size){
-    char* temp = malloc(sizeof(char)*size); //Attention, il faudra free après
+    char* temp = malloc(sizeof(char)*size);
     for (unsigned i = 0; i < size + 1; ++i) {
         *(temp+i) = (char) tolower(word[i]);
     }
     return temp;
-} // transforme tous les caractères en minuscule
+}
 
 void displayLines(struct Location *firstLocation, FILE* stream, bool isFirstDisplayedLine){
 

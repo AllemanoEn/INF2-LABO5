@@ -28,7 +28,7 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 /**
  * Affiche le mot du Heading dand le flux
  * @param word
- * @param stream 
+ * @param stream
  */
 void displayWord(struct Heading *word, FILE* stream);
 
