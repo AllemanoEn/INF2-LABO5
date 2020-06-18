@@ -11,12 +11,16 @@
 
 
 /* book_index.h */
-void createIndex(const char filename_text[],const char filename_index[],const char filename_stopword[]){
+void createIndex(const char filename_text[],const char filename_stopword[]){
     char** text = NULL;
-    size_t lines = 0;
+    size_t lines_text = 0;
 
-    readFile(filename_text, &text, &lines);
-    fillIndex(text, lines);
+    char** stopword = NULL;
+    size_t lines_stopword = 0;
+
+    readFile(filename_text, &text, &lines_text);
+    readFile(filename_stopword, &stopword, &lines_stopword);
+    fillIndex(text, lines_text);
 }
 
 struct Heading* findWord(char const word[], unsigned const wordSize){

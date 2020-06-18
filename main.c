@@ -6,11 +6,13 @@ int main(int argc, char *argv[]) {
 
     /*
     if (argc == 3){
-        createIndex(argv[0],argv[1],argv[2]);
+        createIndex(argv[0],argv[2]);
+        saveIndex(argv[1]);
+
     }
      */
 
-    createIndex("text.txt","index.txt","stopword.txt");
+    createIndex("text.txt","stopword.txt");
     displayIndex();
 
 
