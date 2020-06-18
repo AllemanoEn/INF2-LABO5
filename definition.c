@@ -11,7 +11,7 @@
 /* book_index.h */
 void createIndex(const char filename_text[],const char filename_stopword[]){
     char** text = NULL;
-    size_t lines_text = 0;
+    size_t lines = 0;
 
     readFile(filename_text, &text, &lines);
     fillIndex(text, lines);
@@ -65,7 +65,7 @@ void fillIndex(char** text, unsigned const lineCount){
         char* token = strtok(text[i], DELIM);
 
         while(token != NULL){
-            struct Header *word = createWord(token, strlen(token), i);
+            struct Heading *word = createWord(token, strlen(token), i);
             saveWord(word);
 
             token = strtok(NULL, DELIM);
@@ -269,4 +269,3 @@ void destroyLocations(struct Location *loc) {
     }
 
 }
-
