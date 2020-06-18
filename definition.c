@@ -130,6 +130,8 @@ void displayWord(struct Heading *word){
 }
 
 void saveWord(struct Heading *word){
+    if(strlen(word->word) < 3)
+        return;
 
     if(Heading_index.firstHeading == NULL)
     {
