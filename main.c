@@ -2,10 +2,18 @@
 #include "book_index.h"
 #include "heading.h"
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    createIndex("text.txt");
+    /*
+    if (argc == 3){
+        createIndex(argv[0],argv[1],argv[2]);
+    }
+     */
+
+    createIndex("text.txt","index.txt","stopword.txt");
     displayIndex();
+
+
 
     return 0;
 
