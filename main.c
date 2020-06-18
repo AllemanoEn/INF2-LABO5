@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
         destroyIndex();
     }*/
 
-    createIndex("text.txt", "stopwords2");
+    createIndex("text.txt", "stopwords.txt");
     displayIndex();
     destroyIndex();
 

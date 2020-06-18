@@ -93,6 +93,7 @@ void fillIndex(char** text, unsigned const lineCount, char** stopwords, unsigned
         char* token = strtok(text[i], DELIM);
         //printf("%d/%d\n", i, lineCount); // test
         while(token != NULL){
+            token = to_lower(token, strlen(token));
             if(!binarySearch(token, stopwords, swCount)){
                 struct Heading *word = createWord(token, strlen(token), i);
                 saveWord(word);
@@ -213,7 +214,7 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
 
-    struct Heading WordStack = {NULL, to_lower(word, wordSize), wordSize, loc};
+    struct Heading WordStack = {NULL, word, wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
     return wordHeading;
@@ -262,7 +263,7 @@ void addLocation(struct Location** locations, unsigned const lineNb){
         return;
 
     size_t locSize = sizeof(struct Location);
-    struct Location* loc = (struct Location*) malloc(locSize);
+    struct Location* loc = (struct Location*) malloc(locSize + 2);
     loc->lineNumber = lineNb;
     loc->next = *locations;
 
