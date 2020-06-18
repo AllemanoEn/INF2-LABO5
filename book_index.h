@@ -1,3 +1,13 @@
+/// \file book_index.h
+/// \authors Enzo Allemano, David Pellissier, Michael Ruckstuhl
+/// \date 18.06.2020
+///
+/// \brief \b Laboratoire \b 06
+/// \brief Contient les prototypes book index
+///
+/// Remarque :
+///
+/// Compilateur : MinGw-g++ 6.3.0
 #ifndef INF2_LABO5_BOOK_INDEX_H
 #define INF2_LABO5_BOOK_INDEX_H
 

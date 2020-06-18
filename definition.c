@@ -1,3 +1,10 @@
+/// \file definition.cpp
+/// \authors Enzo Allemano, David Pellissier, Michael Ruckstuhl
+/// \date 22.03.2020
+///
+/// Remarque :
+///
+/// Compilateur : MinGw-g++ 6.3.0
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

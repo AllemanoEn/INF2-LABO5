@@ -1,3 +1,13 @@
+/// \file heading.h
+/// \authors Enzo Allemano, David Pellissier, Michael Ruckstuhl
+/// \date 18.06.2020
+///
+/// \brief \b Laboratoire \b 06
+/// \brief Contient les prototypes heading
+///
+/// Remarque :
+///
+/// Compilateur : MinGw-g++ 6.3.0
 #ifndef INF2_LABO5_HEADING_H
 #define INF2_LABO5_HEADING_H
 #include <stdbool.h>
