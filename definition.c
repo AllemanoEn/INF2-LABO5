@@ -77,6 +77,10 @@ void fillIndex(char** text, unsigned const lineCount){
 void printIndex(FILE* stream){
     struct Heading* ptr = Heading_index.firstHeading;
 
+    if(ptr == NULL){
+        return;
+    }
+
     do
     {
         displayWord(ptr, stream);
@@ -84,7 +88,7 @@ void printIndex(FILE* stream){
         displayLines(ptr->lines, stream, true);
         ptr = ptr->next;
         fprintf(stream,"\n");
-    } while(ptr->next != NULL );
+    } while(ptr != NULL );
 
 }
 
