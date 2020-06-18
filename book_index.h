@@ -32,7 +32,7 @@ struct Heading* findWord(char const word[], unsigned const wordSize); // todo: w
  * @details Crée un Heading pour chaque mot du texte.Le texte est passé sous forme de tableau de char*
  * afin de pouvoir compter facilement la ligne lorsqu'un mot est traité
  */
-void fillIndex(char** text, unsigned const lineCount);
+void fillIndex(char** text, unsigned const lineCount, char** stopwords, unsigned const swCount);
 
 /**
  * Libère la mémoire allouée à l'ensemble de l'index

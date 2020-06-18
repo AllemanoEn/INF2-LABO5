@@ -11,15 +11,23 @@
 /* book_index.h */
 void createIndex(const char filename_text[],const char filename_stopword[]){
     char** text = NULL;
-    size_t lines = 0;
+    size_t text_lines = 0;
+    char** stopwords = NULL;
+    size_t stopwords_lines = 0;
 
-    readFile(filename_text, &text, &lines);
-    fillIndex(text, lines);
+    readFile(filename_text, &text, &text_lines);
+    readFile(filename_stopword, &stopwords, &stopwords_lines);
+
+    fillIndex(text, text_lines, stopwords, stopwords_lines);
 
     // Libère la mémoire utilisée par le stockage du texte
-    for(size_t i = 0; i < lines; ++i)
+    for(size_t i = 0; i < text_lines; ++i)
         free(text[i]);
+    for(size_t j = 0; j < stopwords_lines; ++j)
+        free(stopwords[j]);
+
     free(text);
+    free(stopwords);
 }
 
 struct Heading* findWord(char const word[], unsigned const wordSize){
@@ -56,17 +64,39 @@ struct Heading *beforeBiggerWord(const char *word, unsigned const wordSize) {
     return ptr;
 }
 
+bool binarySearch(const char word_to_find[],char** stopwords, int lineCount_stopwords){
 
-void fillIndex(char** text, unsigned const lineCount){
+    int iLePlusPetit = 0;
+    int iLePlusGrand = lineCount_stopwords - 1;
+
+    while (iLePlusPetit <= iLePlusGrand) {
+        int mid = iLePlusPetit + (iLePlusGrand - iLePlusPetit) / 2;
+
+        if (strcmp(word_to_find,stopwords[mid]) == 0) {
+            return true;
+        }
+
+        if (strcmp(word_to_find,stopwords[mid]) > 0) {
+            iLePlusPetit = mid + 1;
+        } else {
+            iLePlusGrand = mid - 1;
+        }
+    }
+    return false;
+}
+
+void fillIndex(char** text, unsigned const lineCount, char** stopwords, unsigned const swCount){
 
     const char DELIM[] = "0123456789`~$^+=<>“!@#&()–[{}]:;',?/*. \n";
     for(int i = 0; i < lineCount; ++i)
     {
         char* token = strtok(text[i], DELIM);
-
+        //printf("%d/%d\n", i, lineCount); // test
         while(token != NULL){
-            struct Heading *word = createWord(token, strlen(token), i);
-            saveWord(word);
+            if(!binarySearch(token, stopwords, swCount)){
+                struct Heading *word = createWord(token, strlen(token), i);
+                saveWord(word);
+            }
 
             token = strtok(NULL, DELIM);
         }
@@ -140,7 +170,13 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
 
         fgets (linestr , 100 , file); // récupération de la ligne
 
-        char* l = malloc(sizeof(char) * strlen(linestr) + 1); // allocation de la mémoire
+        unsigned lineSize = strlen(linestr);
+        if(lineSize != 0 && linestr[lineSize - 1] == '\n'){
+            linestr[lineSize - 1] = '\0';
+            lineSize--;
+        }
+
+        char* l = malloc(sizeof(char) * lineSize + 1); // allocation de la mémoire
         // remarque: le "+1" sert à éviter une erreur (https://zestedesavoir.com/forums/sujet/10773/erreur-dans-realloc-sysmalloc-assertion-failed/)
 
         strcpy(l, linestr); // copie des données
