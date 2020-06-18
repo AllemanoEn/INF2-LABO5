@@ -16,13 +16,13 @@ struct Heading {
 
 struct Heading* createWord(char word[], unsigned const wordSize, unsigned const lineNb);
 
-void displayWord(struct Heading *word);
+void displayWord(struct Heading *word, FILE* stream);
 void saveWord(struct Heading *word);
 void destroyWord(struct Heading *word, struct Heading *index);
 
 void addLocation(struct Location* *locations, unsigned const lineNb); // ajoute au début de la liste
 
 char* to_lower(char word[], unsigned const size); // transforme tous les caractères en minuscule
-void displayLines(struct Location *firstLocation, bool isFirstDisplayedLine);
+void displayLines(struct Location *firstLocation, FILE* stream, bool isFirstDisplayedLine);
 
 #endif //INF2_LABO5_HEADING_H

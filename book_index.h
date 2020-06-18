@@ -10,9 +10,10 @@ struct {
 void createIndex(const char filename[]);
 struct Heading* findWord(char const word[], unsigned const wordSize);
 void fillIndex(char** text, unsigned const lineCount);
-void displayIndex();
-void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize);
 
+void printIndex(FILE* stream); // Affiche ou écrit l'index en fonction du stream passé en paramètre
+void displayIndex();
+void saveIndex(char const filename[]);
 
 void readFile(const char filename[], char*** dest, size_t *lineNb);
 
