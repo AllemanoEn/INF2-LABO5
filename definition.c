@@ -48,23 +48,34 @@ void fillIndex(char** text, unsigned const lineCount){
     }
 }
 
-void displayIndex(){
+
+void printIndex(FILE* stream){
     struct Heading* ptr = Heading_index.firstHeading;
 
     while(ptr->next != NULL )
     {
-        displayWord(ptr);
-        printf(", ");
-        displayLines(ptr->lines, true);
+        displayWord(ptr, stream);
+        fprintf(stream, ", ");
+        displayLines(ptr->lines, stream, true);
         ptr = ptr->next;
-        printf("\n");
+        fprintf(stream,"\n");
     }
 
 }
+void displayIndex(){
+    printIndex(stdout);
+}
 
-void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize){
+void saveIndex(char const filename[]){
 
-
+    FILE* file = fopen(filename, "w");
+    if(file == NULL)
+    {
+        perror("Error ");
+        return;
+    }
+    printIndex(file);
+    fclose(file);
 
 }
 
@@ -125,8 +136,8 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
     return wordHeading;
 }
 
-void displayWord(struct Heading *word){
-    printf("%s",word->word);
+void displayWord(struct Heading *word, FILE* stream){
+    fprintf(stream,"%s",word->word);
 }
 
 void saveWord(struct Heading *word){
@@ -156,7 +167,6 @@ void saveWord(struct Heading *word){
 }
 
 
-void destroyWord(struct Heading *word, struct Heading *index){}
 
 
 void addLocation(struct Location** locations, unsigned const lineNb){
@@ -176,15 +186,17 @@ char* to_lower(char word[], unsigned const size){
     return temp;
 } // transforme tous les caractères en minuscule
 
-void displayLines(struct Location *firstLocation, bool isFirstDisplayedLine){
+void displayLines(struct Location *firstLocation, FILE* stream, bool isFirstDisplayedLine){
 
     if(firstLocation == NULL)
         return;
 
-    displayLines(firstLocation->next, false);
-    printf("%d", firstLocation->lineNumber + 1);
+    displayLines(firstLocation->next, stream,false);
+    fprintf(stream,"%d", firstLocation->lineNumber + 1);
     if(!isFirstDisplayedLine)
-        printf(", ");
+        fprintf(stream,", ");
 
 
-} // récursive pour afficher la liste de la fin au début
+}
+
+void destroyWord(struct Heading *word, struct Heading *index){}
