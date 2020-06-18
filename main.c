@@ -13,11 +13,15 @@ bool checkFileExists(const char* filename){
 
 int main(int argc, char *argv[]) {
 
-    /*const char* helpArg = "-h";
-    if(argc == 2 && !strcmp(argv[1], helpArg))
+    if(argc == 2 && !strcmp(argv[1], "-h"))
     {
         // TODO: Afficher l'aide
-        printf("\ngit gud\n");
+        printf("-------------------------------------------------------------\n"
+               "Pour utiliser cette executable, vous devez entrer 3 arguments\n\n"
+               "arg 1 : chemin du fichier ou se trouve le texte.\n"
+               "arg 2 : chemin du fichier de stockage du futur index.\n"
+               "arg 3 : chemin du fichier des mots à exclure."
+               "-------------------------------------------------------------\n");
         return 0;
     }
     else if(argc == 4)
@@ -36,16 +40,11 @@ int main(int argc, char *argv[]) {
                 return 0;
         }
 
-        //printf("%s\n%s\n%s", textFile, indexFile, stopWords);
         createIndex(textFile, stopWords);
         displayIndex();
         saveIndex(indexFile);
         destroyIndex();
-    }*/
-
-    createIndex("text.txt", "stopwords.txt");
-    displayIndex();
-    destroyIndex();
+    }
 
     return 0;
 
