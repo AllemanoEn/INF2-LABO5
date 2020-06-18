@@ -10,6 +10,8 @@ struct {
 void createIndex(const char filename_text[],const char filename_index[],const char filename_stopword[]);
 struct Heading* findWord(char const word[], unsigned const wordSize);
 void fillIndex(char** text, unsigned const lineCount);
+void destroyIndex();
+void destroyList(struct Heading* word);
 
 void printIndex(FILE* stream); // Affiche ou écrit l'index en fonction du stream passé en paramètre
 void displayIndex();

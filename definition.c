@@ -8,8 +8,6 @@
 
 
 
-
-
 /* book_index.h */
 void createIndex(const char filename_text[],const char filename_index[],const char filename_stopword[]){
     char** text = NULL;
@@ -17,6 +15,11 @@ void createIndex(const char filename_text[],const char filename_index[],const ch
 
     readFile(filename_text, &text, &lines);
     fillIndex(text, lines);
+
+    // Libère la mémoire utilisée par le stockage du texte
+    for(size_t i = 0; i < lines; ++i)
+        free(text[i]);
+    free(text);
 }
 
 struct Heading* findWord(char const word[], unsigned const wordSize){
@@ -48,7 +51,6 @@ void fillIndex(char** text, unsigned const lineCount){
     }
 }
 
-
 void printIndex(FILE* stream){
     struct Heading* ptr = Heading_index.firstHeading;
 
@@ -62,6 +64,7 @@ void printIndex(FILE* stream){
     }
 
 }
+
 void displayIndex(){
     printIndex(stdout);
 }
@@ -79,8 +82,6 @@ void saveIndex(char const filename[]){
 
 }
 
-
-
 void readFile(const char filename[], char*** dest, size_t* lineNb){
     FILE * file;
     char linestr [100];
@@ -88,7 +89,11 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
     file = fopen (filename , "r");
 
     if(file == NULL)
+    {
+        perror("Error ");
         exit(EXIT_FAILURE);
+    }
+
 
     // comptage des lignes
     unsigned count = 1;
@@ -119,6 +124,21 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
     *lineNb = count;
 }
 
+
+void destroyIndex(){
+    destroyList(Heading_index.firstHeading);
+}
+
+void destroyList(struct Heading* word) {
+
+    if(word->next != NULL){
+        destroyList(word->next);
+        destroyWord(word);
+    }
+}
+
+
+
 /* heading.h */
 struct Heading* createWord(char word[], unsigned const wordSize, unsigned const lineNb){
 
@@ -129,7 +149,7 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
-    int s = sizeof(struct Heading);
+
     struct Heading WordStack = {NULL, to_lower(word, wordSize), wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
@@ -166,9 +186,6 @@ void saveWord(struct Heading *word){
     ptr->next = word;
 }
 
-
-
-
 void addLocation(struct Location** locations, unsigned const lineNb){
     size_t locSize = sizeof(struct Location);
     struct Location* loc = (struct Location*) malloc(locSize);
@@ -196,7 +213,22 @@ void displayLines(struct Location *firstLocation, FILE* stream, bool isFirstDisp
     if(!isFirstDisplayedLine)
         fprintf(stream,", ");
 
+}
+
+
+void destroyWord(struct Heading *word){
+    free(word->word);
+    destroyLocations(word->lines);
+    free(word->lines);
+    free(word);
+}
+
+void destroyLocations(struct Location *loc) {
+
+    if (loc->next != NULL) {
+        destroyLocations(loc->next);
+        free(loc->next);
+    }
 
 }
 
-void destroyWord(struct Heading *word, struct Heading *index){}
