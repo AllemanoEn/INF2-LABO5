@@ -13,8 +13,6 @@ void fillIndex(char** text, unsigned const lineCount);
 void displayIndex();
 void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize);
 
-void test();
-
 
 void readFile(const char filename[], char*** dest, size_t *lineNb);
 

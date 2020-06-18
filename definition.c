@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
 #include "book_index.h"
 #include "heading.h"
 
@@ -16,8 +17,6 @@ void createIndex(const char filename[]){
 
     readFile(filename, &text, &lines);
     fillIndex(text, lines);
-
-    displayIndex();
 }
 
 struct Heading* findWord(char const word[], unsigned const wordSize){
@@ -56,14 +55,18 @@ void displayIndex(){
     {
         displayWord(ptr);
         printf(", ");
-        displayLines(ptr->lines);
+        displayLines(ptr->lines, true);
         ptr = ptr->next;
         printf("\n");
     }
 
 }
 
-void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize){}
+void saveIndex(struct Heading* index, char const filename[], unsigned const fnSize){
+
+
+
+}
 
 
 
@@ -78,12 +81,12 @@ void readFile(const char filename[], char*** dest, size_t* lineNb){
 
     // comptage des lignes
     unsigned count = 1;
-    char c = getc(file);
+    char c = (char)getc(file);
     while(c != EOF)
     {
         if(c == '\n')
             ++count;
-        c = getc(file);
+        c = (char)getc(file);
     }
 
     rewind(file);
@@ -115,6 +118,7 @@ struct Heading* createWord(char word[], unsigned const wordSize, unsigned const 
 
     size_t headingSize = sizeof(struct Heading);
     struct Heading* wordHeading = malloc(headingSize);
+    int s = sizeof(struct Heading);
     struct Heading WordStack = {NULL, to_lower(word, wordSize), wordSize, loc};
     memcpy(wordHeading, &WordStack, headingSize);
 
@@ -136,8 +140,7 @@ void saveWord(struct Heading *word){
     struct Heading* wordPos = findWord(word->word, word->wordSize);
     if(wordPos != NULL)
     {
-//       printf("doublon: %s ", word->word);
-       addLocation(wordPos->lines, word->lines->lineNumber);
+       addLocation(&(wordPos->lines), word->lines->lineNumber);
        return;
     }
 
@@ -153,15 +156,15 @@ void saveWord(struct Heading *word){
 
 void destroyWord(struct Heading *word, struct Heading *index){}
 
-void addLocation(struct Location *locations, unsigned const lineNb){
+
+void addLocation(struct Location** locations, unsigned const lineNb){
     size_t locSize = sizeof(struct Location);
-    struct Location* loc = malloc(locSize);
-
+    struct Location* loc = (struct Location*) malloc(locSize);
     loc->lineNumber = lineNb;
-    loc->next = locations->next;
+    loc->next = *locations;
 
-    locations->next = loc;
-} // ajoute au début de la liste
+    *locations = loc;
+}
 
 char* to_lower(char word[], unsigned const size){
     char* temp = malloc(sizeof(char)*size); //Attention, il faudra free après
@@ -171,11 +174,15 @@ char* to_lower(char word[], unsigned const size){
     return temp;
 } // transforme tous les caractères en minuscule
 
-void displayLines(struct Location *firstLocation){
-    if (firstLocation->next != NULL){
-        printf("%d, ", firstLocation->lineNumber + 1);
-        displayLines(firstLocation->next);
-    }else{
-        printf("%d", firstLocation->lineNumber + 1);
-    }
+void displayLines(struct Location *firstLocation, bool isFirstDisplayedLine){
+
+    if(firstLocation == NULL)
+        return;
+
+    displayLines(firstLocation->next, false);
+    printf("%d", firstLocation->lineNumber + 1);
+    if(!isFirstDisplayedLine)
+        printf(", ");
+
+
 } // récursive pour afficher la liste de la fin au début

@@ -5,6 +5,7 @@
 int main() {
 
     createIndex("text.txt");
+    displayIndex();
 
     return 0;
 
