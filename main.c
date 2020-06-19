@@ -1,11 +1,24 @@
+/// \file main.c
+/// \authors Enzo Allemano, David Pellissier, Michael Ruckstuhl
+/// \date 19.06.2020
+///
+/// Remarque concernant l'indexage de l'ensemble des oeuvres de Shakespeare:
+/// Malheureusement notre code ne fonctionne pas avec les fichiers trop longs à cause
+/// d'une erreur de malloc que nous n'avons pas pu résoudre.
+/// Cependant pour les fichiers "normaux" le programme fonctionne correctement.
+///
+/// Compilateur : MinGw-g++ 6.3.0
+
+
 #include <stdio.h>
 #include <string.h>
 #include "book_index.h"
+#include "heading.h"
 
-bool checkFileExists(const char* filename){
+bool checkFileExists(const char *filename){
 
     FILE* open = fopen(filename, "r");
-    bool fileexist = open != NULL;
+    bool fileexist = (open != NULL);
     fclose(open);
     return fileexist;
 
@@ -24,6 +37,7 @@ int main(int argc, char *argv[]) {
                "-------------------------------------------------------------\n");
         return 0;
     }
+
     else if(argc == 4)
     {
         char* textFile = argv[1];
@@ -47,6 +61,5 @@ int main(int argc, char *argv[]) {
     }
 
     return 0;
-
 
 }
